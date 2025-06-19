@@ -1,11 +1,17 @@
+from datetime import datetime
 from client.services.api_client import APIClient
 from client.services.session_manager import SessionManager
-from client.utils import show_notification_menu, show_saved_menu
+from client.ui.headline_ui import show_headlines_menu
+from client.ui.search_ui import show_search_menu
+from client.ui.notification_ui import show_notification_menu
 from server.controllers.category_controller import CategoryController
 from server.controllers.external_server_controller import ExternalServerController
+from client.ui.saved_ui import show_saved_menu
 
 api = APIClient()
 session = SessionManager()
+external_controller = ExternalServerController()
+cc = CategoryController()
 
 def show_main_menu():
     while True:
@@ -31,8 +37,9 @@ def login():
     password = input("Password: ")
     response = api.request("POST", "/login", {"email": email, "password": password})
     if response.get("success"):
-        session.login(response["user"])
-        print(f"Welcome {response['user']['username']}!")
+        # ✅ Fix: Properly store user and token in session
+        session.login(user=response["user"], token=response.get("token"))
+        print(f"Welcome {response['user'].get('username', 'User')}!")
         show_dashboard()
     else:
         print("❌", response.get("message") or response.get("error"))
@@ -41,24 +48,22 @@ def signup():
     username = input("Username: ")
     email = input("Email: ")
     password = input("Password: ")
-    role = input("Role (admin/user): ").strip().lower()
+
+    # Always assign role as 'user'
     response = api.request("POST", "/signup", {
         "username": username,
         "email": email,
         "password": password,
-        "role": role if role in ['admin', 'user'] else 'user'
+        "role": "user"
     })
-    print("✅" if response.get("success") else "❌", response.get("message") or response.get("error"))
+
+    print("✅ Signup successful!" if response.get("success") else f"❌ {response.get('message') or response.get('error')}")
 
 def show_dashboard():
     if session.get_role() == 'admin':
         show_admin_menu()
     else:
         show_user_menu()
-
-from server.controllers.external_server_controller import ExternalServerController
-
-external_controller = ExternalServerController()
 
 def show_admin_menu():
     while True:
@@ -73,8 +78,10 @@ def show_admin_menu():
         if choice == '1':
             servers = external_controller.view_server_status()
             for s in servers:
-                status = "Active" if s["is_active"] else "Not Active"
-                print(f"{s['server_id']}. {s['name']} - {status} - Last Accessed: {s['last_accessed']}")
+                dict_s = dict(s)
+                status = "Active" if dict_s.get("is_active") else "Not Active"
+                print(f"{dict_s.get('server_id', dict_s.get('id'))}. {dict_s.get('name')} - {status} - Last Accessed: {dict_s.get('last_accessed') or 'N/A'}")
+
         elif choice == '2':
             servers = external_controller.view_server_details()
             for s in servers:
@@ -87,55 +94,48 @@ def show_admin_menu():
             else:
                 print("❌ Failed to update API key.")
         elif choice == '4':
-            name = input("Enter new category name: ").lower()
-            from server.controllers.category_controller import CategoryController
-            cc = CategoryController()
+            name = input("Enter new category name: ").strip().lower()
             if cc.add_category(name):
-                print("✅ Category added.")
+                print(f"✅ Category '{name}' added.")
             else:
                 print("❌ Failed to add category.")
         elif choice == '5':
             print("Logged out.")
+            session.logout()
             break
         else:
             print("Invalid option. Try again.")
 
-
-
 def show_user_menu():
+    user = session.get_user()
+    if not user:
+        print("❌ Invalid user session. Please log in again.")
+        return
+
     while True:
-        print("\n--- User Menu ---")
-        print("1. View Today's News")
-        print("2. View News by Date Range")
-        print("3. View News by Category & Date")
-        print("4. Saved Articles")
-        print("5. Notifications")
-        print("6. Logout")
+        today = datetime.now().strftime('%d-%b-%Y')
+        time = datetime.now().strftime('%I:%M%p')
 
-        choice = input("Choose: ")
+        print(f"\nWelcome to the News Application, {user.get('username', 'User')}! Date: {today} Time: {time}")
+        print("Please choose the options below")
+        print("1. Headlines")
+        print("2. Saved Articles")
+        print("3. Search")
+        print("4. Notifications")
+        print("5. Logout")
 
+        choice = input("Choose: ").strip()
         if choice == '1':
-            response = api.request("GET", "/news/today")
-            show_saved_menu.print_articles(response)
+            show_headlines_menu(user)
         elif choice == '2':
-            start = input("Start Date (YYYY-MM-DD): ")
-            end = input("End Date (YYYY-MM-DD): ")
-            response = api.request("POST", "/news/range", {"start_date": start, "end_date": end})
-            show_saved_menu.print_articles(response)
-        elif choice == '3':
-            cat = input("Category (business/entertainment/sports/technology): ")
-            date = input("Date (YYYY-MM-DD): ")
-            response = api.request("POST", "/news/by-category", {"category": cat, "date": date})
-            show_saved_menu.print_articles(response)
-        elif choice == '4':
             show_saved_menu()
+        elif choice == '3':
+            show_search_menu(user)
+        elif choice == '4':
+            show_notification_menu(user)
         elif choice == '5':
-            show_notification_menu()
-        elif choice == '6':
             session.logout()
-            print("Logged out.")
+            print("Logged out successfully.")
             break
         else:
-            print("Invalid choice.")
-
-
+            print("Invalid choice. Try again.")

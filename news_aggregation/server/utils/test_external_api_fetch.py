@@ -30,13 +30,13 @@ def fetch_and_print(server):
         req = urllib.request.Request(server['url'], headers=server['headers'])
         with urllib.request.urlopen(req) as response:
             data = json.load(response)
-            print(f"✅ Status: {response.status}")
+            print(f" Status: {response.status}")
             articles = (
                 data.get("articles") or
                 data.get("news") or
                 data.get("data") or []
             )
-            print(f"📰 Total Articles: {len(articles)}")
+            print(f" Total Articles: {len(articles)}")
 
             for a in articles[:5]:
                 if not isinstance(a, dict):
@@ -49,7 +49,7 @@ def fetch_and_print(server):
                 print(f"- {title} | {date} | {source}")
 
     except Exception as e:
-        print(f"❌ Error: {e}")
+        print(f" Error: {e}")
 
 
 if __name__ == "__main__":

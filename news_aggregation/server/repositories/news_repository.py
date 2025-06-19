@@ -16,7 +16,7 @@ class NewsRepository(BaseRepository):
             )
             self.execute(query, params)
         except Exception as e:
-            print(f"❌ Error saving article: {e}")
+            print(f" Error saving article: {e}")
 
     def get_news_by_date(self, date_str):
         query = '''
@@ -38,4 +38,15 @@ class NewsRepository(BaseRepository):
             ORDER BY published_at DESC
         """
         return self.fetchall(query, (date, category_id))
+    def search_articles(self, keyword, start_date, end_date):
+        query = """
+            SELECT * FROM news_articles
+            WHERE (LOWER(title) LIKE ? OR LOWER(content) LIKE ?)
+            AND DATE(published_at) BETWEEN DATE(?) AND DATE(?)
+            ORDER BY (likes - dislikes) DESC
+        """
+        like_term = f"%{keyword.lower()}%"
+        rows = self.fetchall(query, (like_term, like_term, start_date, end_date))
+        return [dict(row) for row in rows]
+
 

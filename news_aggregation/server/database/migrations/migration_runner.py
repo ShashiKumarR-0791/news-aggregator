@@ -13,7 +13,7 @@ def run_migration():
     cursor.executescript(sql_script)
     conn.commit()
     conn.close()
-    print("✅ Database schema created successfully.")
+    print(" Database schema created successfully.")
 
 if __name__ == "__main__":
     run_migration()

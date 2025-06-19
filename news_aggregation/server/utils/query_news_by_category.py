@@ -13,7 +13,7 @@ def get_category_id(cursor, category_name):
 
 def get_articles_by_category(category_name):
     if not os.path.exists(DB_PATH):
-        print(f"❌ Database not found at: {DB_PATH}")
+        print(f" Database not found at: {DB_PATH}")
         return
 
     conn = sqlite3.connect(DB_PATH)
@@ -22,7 +22,7 @@ def get_articles_by_category(category_name):
 
     category_id = get_category_id(cursor, category_name)
     if not category_id:
-        print(f"❌ Category '{category_name}' not found in DB.")
+        print(f" Category '{category_name}' not found in DB.")
         conn.close()
         return
 
@@ -42,7 +42,7 @@ def get_articles_by_category(category_name):
         print("⚠️ No articles found in this category.")
     else:
         for row in rows:
-            print(f"📰 {row['title']}")
+            print(f" {row['title']}")
             print(f"   Source: {row['source']}")
             print(f"   Published At: {row['published_at']}")
             print(f"   URL: {row['url']}\n")

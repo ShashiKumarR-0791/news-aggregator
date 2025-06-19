@@ -5,7 +5,7 @@ db_path = os.path.join(os.path.dirname(__file__), 'news_aggregator.db')
 conn = sqlite3.connect(db_path)
 cursor = conn.cursor()
 
-# ✅ Use your actual API key here
+#  Use your actual API key here
 REAL_KEY = "af3ce09176fb4fd3be6fcfd1e000776c"
 The_API_KEY="E59Lzz4zfUYOtWZ3zQGV8Ofo9Vj7RcSNX02LcSet"
 
@@ -35,4 +35,4 @@ cursor.execute("""
 
 conn.commit()
 conn.close()
-print("✅ External server URLs and API keys have been fixed.")
+print(" External server URLs and API keys have been fixed.")

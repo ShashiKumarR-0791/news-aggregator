@@ -10,7 +10,6 @@ class PasswordUtils:
     def hash_password(password: str) -> str:
         """Hash a password using bcrypt"""
         try:
-            # Generate salt and hash password
             salt = bcrypt.gensalt()
             hashed = bcrypt.hashpw(password.encode('utf-8'), salt)
             return hashed.decode('utf-8')

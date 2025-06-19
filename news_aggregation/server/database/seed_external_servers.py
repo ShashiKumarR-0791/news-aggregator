@@ -34,4 +34,4 @@ for name, api_url, api_key in external_servers:
 conn.commit()
 conn.close()
 
-print("✅ External servers seeded successfully.")
+print(" External servers seeded successfully.")

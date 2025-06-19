@@ -14,5 +14,4 @@ class ExternalServerController:
         return self.repo.update_api_key(server_id, new_key)
     
     def view_server_status(self):
-        # This returns basic info (name, status, last_accessed)
         return self.repo.get_all_servers()

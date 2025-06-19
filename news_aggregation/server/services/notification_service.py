@@ -27,3 +27,11 @@ class NotificationService:
             keywords = (keyword_config['keywords'] or '').lower().split(',')
             return any(kw.strip() in article_text.lower() for kw in keywords)
         return False
+    def get_notifications(self, user_id):
+        return self.repo.get_by_user(user_id)
+
+    def update_user_notification(self, user_id, category, status):
+        return self.repo.set_user_preference(user_id, category, status)
+
+    def update_keywords(self, user_id, keywords):
+        return self.repo.set_user_keywords(user_id, keywords)

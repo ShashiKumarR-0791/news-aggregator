@@ -6,7 +6,7 @@ class EmailService:
         self.smtp_server = "smtp.gmail.com"
         self.smtp_port = 587
         self.from_email = "your_email@gmail.com"
-        self.password = "your_app_password"  # Use App Password if using Gmail
+        self.password = "your_app_password" 
 
     def send_email(self, to_email, subject, content):
         msg = EmailMessage()

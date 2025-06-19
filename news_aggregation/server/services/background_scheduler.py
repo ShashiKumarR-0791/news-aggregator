@@ -8,7 +8,7 @@ from server.repositories.user_repository import UserRepository
 
 class BackgroundScheduler:
     def __init__(self, interval_hours=3):
-        self.interval = interval_hours * 3600  # convert hours to seconds
+        self.interval = interval_hours * 3600  
         self.thread = threading.Thread(target=self.run, daemon=True)
         self.running = True
 
@@ -19,12 +19,12 @@ class BackgroundScheduler:
         self.user_repo = UserRepository()
 
     def start(self):
-        print("🕒 Background scheduler started")
+        print(" Background scheduler started")
         self.thread.start()
 
     def run(self):
         while self.running:
-            print("🔄 Background task: Fetching news & sending notifications...")
+            print("Background task: Fetching news & sending notifications...")
             self.external_api.fetch_and_store_all()
 
             all_users = self.user_repo.get_all_users()

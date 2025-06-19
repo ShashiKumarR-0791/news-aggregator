@@ -3,7 +3,7 @@ import json
 from urllib.parse import urlparse, parse_qs
 
 class CustomHandler(BaseHTTPRequestHandler):
-    router = None  # Inject router from main
+    router = None 
 
     def do_GET(self):
         self.handle_request('GET')
@@ -42,3 +42,11 @@ def run_server(router, port=8000):
     server = HTTPServer(('localhost', port), CustomHandler)
     print(f"🚀 Server started on http://localhost:{port}")
     server.serve_forever()
+
+def http_response(body, status=200, content_type="text/plain"):
+    return {
+        "status": status,
+        "headers": {"Content-Type": content_type},
+        "body": body
+    }
+

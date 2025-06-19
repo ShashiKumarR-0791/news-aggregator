@@ -20,12 +20,12 @@ def show_categories():
         print("\n📂 Categories in Database:\n")
         for row in rows:
             category_id, name, desc, is_active, created_at = row
-            print(f"🆔 ID: {category_id} | 🏷️ Name: {name} | 📃 Description: {desc or 'N/A'} | ✅ Active: {bool(is_active)} | 📅 Created: {created_at}")
+            print(f"🆔 ID: {category_id} | 🏷️ Name: {name} | 📃 Description: {desc or 'N/A'} |  Active: {bool(is_active)} | 📅 Created: {created_at}")
 
         conn.close()
 
     except Exception as e:
-        print(f"❌ Error: {e}")
+        print(f" Error: {e}")
 
 if __name__ == "__main__":
     show_categories()

@@ -1,4 +1,3 @@
-
 from client.services.api_client import APIClient
 from client.services.session_manager import SessionManager
 
@@ -25,16 +24,16 @@ def show_saved_menu():
             break
 
 def print_articles(response):
-    print("📤 Received response from API:", response)  # ← ADD THIS
+    print("📤 Received response from API:", response) 
 
     if "error" in response:
-        print("❌", response["error"])
+        print("", response["error"])
         return
     if not response:
         print("No articles found.")
         return
     for article in response:
-        print(f"\n📰 {article['title']}")
+        print(f"\n {article['title']}")
         print(f"  Source: {article['source']}")
         print(f"  Published At: {article['published_at']}")
         print(f"  URL: {article['url']}")

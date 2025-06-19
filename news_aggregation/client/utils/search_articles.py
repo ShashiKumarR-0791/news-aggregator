@@ -1,5 +1,3 @@
-
-
 from client.services.api_client import APIClient
 from client.services.session_manager import SessionManager
 from client.utils.show_saved_menu import print_articles

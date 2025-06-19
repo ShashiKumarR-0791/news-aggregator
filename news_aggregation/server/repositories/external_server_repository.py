@@ -19,16 +19,20 @@ class ExternalServerRepository(BaseRepository):
         ))
 
     def get_all_servers(self, with_api_keys=False):
-        conn = get_connection()
-        conn.row_factory = sqlite3.Row
-        cursor = conn.cursor()
+        query = "SELECT * FROM external_servers"
+        rows = self.fetchall(query)
 
-        query = "SELECT server_id, name, is_active, last_accessed FROM external_servers"
-        if with_api_keys:
-            query = "SELECT * FROM external_servers"
+        result = []
+        for row in rows:
+            server = dict(row)  # Convert sqlite3.Row to dict
+            if not with_api_keys:
+                server["api_key"] = "***"  # Mask API key
+            result.append(server)
 
-        cursor.execute(query)
-        return [dict(row) for row in cursor.fetchall()]
+        return result
+
+
+
 
     def update_api_key(self, server_id, new_key):
         conn = get_connection()

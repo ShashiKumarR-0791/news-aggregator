@@ -1,12 +1,11 @@
 from server.models.base_model import BaseModel
 
 class Category(BaseModel):
-    def __init__(self, name, description='', is_active=True):
-        super().__init__()
-        self.category_id = None
+    def __init__(self, name, description='', is_active=True, created_at=None):
         self.name = name
         self.description = description
         self.is_active = is_active
+        self.created_at = created_at
 
     def to_dict(self):
         return {

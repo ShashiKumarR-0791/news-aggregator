@@ -6,7 +6,9 @@ def signup_handler(data, _):
     username = data.get("username")
     email = data.get("email")
     password = data.get("password")
-    role = data.get("role", "user")
+
+    role = "user"
+    
     return auth_service.register_user(username, email, password, role)
 
 def login_handler(data, _):
