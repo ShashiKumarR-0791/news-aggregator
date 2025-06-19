@@ -6,13 +6,16 @@ def display_articles(articles):
         print("No articles found.")
         return
 
-    for article in articles:
-        print(f"\n {article['title']}")
-        print(f"Source: {article['source']}")
-        print(f"Published At: {article['published_at']}")
-        print(f"URL: {article['url']}")
-        # print(f"Category: {article.get('category') or 'N/A'}")
-        print(f"Article Id: {article['article_id']}")
+    print("\n--- Articles ---")
+
+    for index, article in enumerate(articles, start=1):
+        print(f"\n{index}. {article.get('title', 'No Title')}")
+        print(f"   📰 Source      : {article.get('source', 'Unknown')}")
+        print(f"   📅 Published At: {article.get('published_at', 'Unknown')}")
+        print(f"   🔗 URL         : {article.get('url', 'N/A')}")
+        print(f"   🆔 Article ID  : {article.get('article_id', 'N/A')}")
+
+
 
 def save_article_prompt():
     while True:

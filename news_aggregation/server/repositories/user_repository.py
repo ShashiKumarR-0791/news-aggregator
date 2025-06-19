@@ -34,9 +34,5 @@ class UserRepository(BaseRepository):
         query = "DELETE FROM users WHERE user_id = ?"
         self.execute(query, (user_id,))
         return True
-    def update_user_role(self, user_id, new_role):
-        query = "UPDATE users SET role = ? WHERE user_id = ?"
-        self.execute(query, (new_role, user_id))
-        return True
-
+    
 

@@ -1,5 +1,11 @@
-from client.api.news_api import get_today_news,get_news_by_date_range, get_today_news_by_category
-from client.ui.article_ui import display_articles, save_article_prompt
+from client.api.news_api import (
+    get_today_news_by_category,
+    get_news_by_date_range
+)
+from client.ui.article_ui import (
+    display_articles,
+    save_article_prompt
+)
 
 def show_headlines_menu(user):
     while True:
@@ -12,15 +18,22 @@ def show_headlines_menu(user):
         if choice == '1':
             show_today_category_menu()
         elif choice == '2':
-            start = input("Start Date (YYYY-MM-DD): ")
-            end = input("End Date (YYYY-MM-DD): ")
-            articles = get_news_by_date_range( start, end)
-            display_articles(articles)
-            save_article_prompt()
+            start_date = input("Start Date (YYYY-MM-DD): ").strip()
+            end_date = input("End Date (YYYY-MM-DD): ").strip()
+
+            response = get_news_by_date_range(start_date, end_date)
+            articles = response.get("articles") if isinstance(response, dict) else None
+
+            if articles:
+                display_articles(articles)
+                save_article_prompt()
+            else:
+                print("❌ Failed to fetch articles:", response)
         elif choice == '3':
             break
         else:
-            print("Invalid choice.")
+            print("❌ Invalid choice. Please enter 1, 2, or 3.")
+
 
 def show_today_category_menu():
     category_map = {
@@ -31,26 +44,28 @@ def show_today_category_menu():
         "5": "technology"
     }
 
-    print("\nPlease choose the options below for Headlines")
-    print("1. All")
-    print("2. Business")
-    print("3. Entertainment")
-    print("4. Sports")
-    print("5. Technology")
-    print("6. Back")
+    while True:
+        print("\nPlease choose the options below for Headlines")
+        print("1. All")
+        print("2. Business")
+        print("3. Entertainment")
+        print("4. Sports")
+        print("5. Technology")
+        print("6. Back")
+        choice = input("Choose: ").strip()
 
-    choice = input("Choose: ").strip()
-    if choice == "6":
-        return
+        if choice == "6":
+            break
 
-    category = category_map.get(choice)
-    if category:
-        from client.api.news_api import get_today_news_by_category
-        articles = get_today_news_by_category(category)
+        category = category_map.get(choice)
+        if category:
+            response = get_today_news_by_category(category)
+            articles = response.get("articles") if isinstance(response, dict) else None
 
-        if isinstance(articles, list):
-            display_articles(articles)
+            if articles:
+                display_articles(articles)
+                save_article_prompt()
+            else:
+                print("❌ Failed to load articles:", response)
         else:
-            print("Failed to load articles:", articles)
-    else:
-        print(" Invalid choice.")
+            print("❌ Invalid choice. Please select from 1 to 6.")

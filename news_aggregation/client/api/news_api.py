@@ -37,6 +37,7 @@ def search_news(query, start_date=None, end_date=None):
     }
     response = requests.post(url, json=payload, headers=session.get_headers())
     return response.json()
+
 def get_today_news_by_category(category):
     payload = {"category": category}
     try:
@@ -46,21 +47,11 @@ def get_today_news_by_category(category):
             headers=session.get_headers()
         )
         response.raise_for_status()
-
-        data = response.json()
-
-        if isinstance(data, list):
-            return data
-        elif isinstance(data, dict) and data.get("articles"):
-            return data["articles"]
-        else:
-            print("⚠️ Unexpected response format from server.")
-            return []
-
+        return response.json()
     except requests.exceptions.JSONDecodeError:
-        print("❌ Server returned invalid JSON or empty response.")
+        print(" Server returned invalid JSON or empty response.")
+        return []
+    except requests.exceptions.RequestException as e:
+        print(f" Error during request: {e}")
         return []
 
-    except requests.exceptions.RequestException as e:
-        print(f"❌ Error during request: {e}")
-        return []

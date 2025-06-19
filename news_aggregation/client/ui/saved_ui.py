@@ -42,3 +42,22 @@ def show_saved_menu():
                 print(f"❌ Error: {e}")
         else:
             print("Invalid choice.")
+from client.api.saved_api import get_saved_articles
+from client.session import session
+
+def show_saved_articles():
+    if not session.is_authenticated():
+        print("❌ No user in session. Please log in again.")
+        return
+
+    articles = get_saved_articles()
+    if not articles:
+        print("❌ No saved articles found.")
+        return
+
+    print("\n--- 📚 Saved Articles ---")
+    for idx, article in enumerate(articles, 1):
+        print(f"\n{idx}. {article['title']}")
+        print(f"Source: {article['source']}")
+        print(f"Published At: {article['published_at']}")
+        print(f"URL: {article['url']}")

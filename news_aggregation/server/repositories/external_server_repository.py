@@ -21,16 +21,10 @@ class ExternalServerRepository(BaseRepository):
     def get_all_servers(self, with_api_keys=False):
         query = "SELECT * FROM external_servers"
         rows = self.fetchall(query)
-
-        result = []
-        for row in rows:
-            server = dict(row)  # Convert sqlite3.Row to dict
-            if not with_api_keys:
-                server["api_key"] = "***"  # Mask API key
-            result.append(server)
-
-        return result
-
+        if not with_api_keys:
+            for r in rows:
+                r["api_key"] = "***"  
+        return rows
 
 
 

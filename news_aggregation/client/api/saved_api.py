@@ -26,6 +26,7 @@ def delete_article(user_id, article_id):
         print(f"❌ Error deleting article: {e}")
         return False
 def save_article(article_id):
-    payload = {"article_id": article_id}
-    response = requests.post(f"{BASE_URL}/saved/save", json=payload, headers=session.get_headers())
+    payload = {"user_id": session.user["user_id"], "article_id": article_id}
+    response = requests.post(f"{BASE_URL}/user/save-article", json=payload, headers=session.get_headers())
     return response.ok
+

@@ -17,13 +17,21 @@ class NewsRepository(BaseRepository):
             self.execute(query, params)
         except Exception as e:
             print(f" Error saving article: {e}")
+    def get_today_articles(self):
+        query = """
+            SELECT * FROM news_articles
+            WHERE date(published_at) = date('now')  -- remove 'localtime'
+            ORDER BY published_at DESC
+        """
+        return self.fetchall(query)
+
 
     def get_news_by_date(self, date_str):
-        query = '''
-            SELECT * FROM news_articles WHERE DATE(published_at) = DATE(?)
-        '''
+        query = "SELECT * FROM news_articles WHERE date(published_at) = ?"
         rows = self.fetchall(query, (date_str,))
-        return [dict(row) for row in rows]
+        return [dict(row) for row in rows] if rows else []
+
+
 
     def get_news_by_range(self, start, end):
         query = '''

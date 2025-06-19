@@ -30,17 +30,21 @@ class BackgroundScheduler:
             all_users = self.user_repo.get_all_users()
             today_articles = self.news_service.get_today_articles()
 
-            for user in all_users:
-                uid = user["user_id"]
-                email = user["email"]
-                for article in today_articles:
-                    article_text = f"{article.get('title')} {article.get('description')} {article.get('content')}"
-                    if self.notification_service.check_keywords_in_article(uid, article_text):
-                        msg = f"Matched keyword alert!\n{article.get('title')}\nURL: {article.get('url')}"
-                        self.notification_service.send_notification(uid, msg, "keyword")
-                        self.email_service.send_email(email, "News Keyword Alert", msg)
+            if not today_articles:
+                print("⚠️ No articles found today. Skipping notifications.")
+            else:
+                for user in all_users:
+                    uid = user["user_id"]
+                    email = user["email"]
+                    for article in today_articles:
+                        article_text = f"{article.get('title')} {article.get('description')} {article.get('content')}"
+                        if self.notification_service.check_keywords_in_article(uid, article_text):
+                            msg = f"Matched keyword alert!\n{article.get('title')}\nURL: {article.get('url')}"
+                            self.notification_service.send_notification(uid, msg, "keyword")
+                            self.email_service.send_email(email, "News Keyword Alert", msg)
 
             time.sleep(self.interval)
+
 
     def stop(self):
         self.running = False
