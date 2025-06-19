@@ -20,6 +20,8 @@ class UserController:
             VALUES (?, ?, datetime('now'))
         '''
         self.base_repo.execute(query, (user_id, article_id))
+        print(f"📥 Saving article_id={article_id} for user_id={user_id}")
+
         return {"message": "Article saved successfully."}
 
     def delete_saved_article(self, data, user):
@@ -66,3 +68,28 @@ class UserController:
         if updated:
             return {"message": "User promoted to admin"}
         return {"error": "Failed to update role"}, 500
+    # @staticmethod
+    # def save_article(request):
+    #     try:
+    #         data = request.json()
+    #         user_id = data.get("user_id")
+    #         article_id = data.get("article_id")
+
+    #         if not user_id or not article_id:
+    #             return {
+    #                 "status": "error",
+    #                 "message": "Missing user_id or article_id"
+    #             }, 400
+
+    #         user_repo = UserRepository()
+    #         user_repo.save_article(user_id, article_id)
+
+    #         return {
+    #             "status": "success",
+    #             "message": "Article saved successfully"
+    #         }, 200
+    #     except Exception as e:
+    #         return {
+    #             "status": "error",
+    #             "message": str(e)
+    #         }, 500

@@ -1,6 +1,7 @@
 from client.api.news_api import (
     get_today_news_by_category,
-    get_news_by_date_range
+    get_news_by_date_range,
+    interact_with_articles
 )
 from client.ui.article_ui import (
     display_articles,
@@ -16,7 +17,7 @@ def show_headlines_menu(user):
         choice = input("Choose: ").strip()
 
         if choice == '1':
-            show_today_category_menu()
+            show_today_category_menu(user)  # Also pass user here
         elif choice == '2':
             start_date = input("Start Date (YYYY-MM-DD): ").strip()
             end_date = input("End Date (YYYY-MM-DD): ").strip()
@@ -26,7 +27,7 @@ def show_headlines_menu(user):
 
             if articles:
                 display_articles(articles)
-                save_article_prompt()
+                interact_with_articles(articles, user)
             else:
                 print("❌ Failed to fetch articles:", response)
         elif choice == '3':
@@ -35,7 +36,7 @@ def show_headlines_menu(user):
             print("❌ Invalid choice. Please enter 1, 2, or 3.")
 
 
-def show_today_category_menu():
+def show_today_category_menu(user):
     category_map = {
         "1": "all",
         "2": "business",
@@ -64,7 +65,7 @@ def show_today_category_menu():
 
             if articles:
                 display_articles(articles)
-                save_article_prompt()
+                interact_with_articles(articles, user)           
             else:
                 print("❌ Failed to load articles:", response)
         else:

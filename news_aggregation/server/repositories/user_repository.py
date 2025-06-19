@@ -30,9 +30,33 @@ class UserRepository(BaseRepository):
         query = 'SELECT * FROM users'
         rows = self.fetchall(query)
         return [dict(row) for row in rows]
+
     def delete_user_by_id(self, user_id):
         query = "DELETE FROM users WHERE user_id = ?"
         self.execute(query, (user_id,))
         return True
-    
+
+    def save_article(self, request, user=None):
+        try:
+            user_id = user.get("user_id") if user else request.get("user_id")
+            article_id = request.get("article_id")
+
+            if not user_id or not article_id:
+                return {
+                    "status": "error",
+                    "message": "Missing user_id or article_id"
+                }, 400
+
+            self.user_repo.save_article(user_id, article_id)
+
+            return {
+                "status": "success",
+                "message": "Article saved successfully"
+            }, 200
+
+        except Exception as e:
+            return {
+                "status": "error",
+                "message": str(e)
+            }, 500
 

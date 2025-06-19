@@ -56,5 +56,12 @@ class NewsRepository(BaseRepository):
         like_term = f"%{keyword.lower()}%"
         rows = self.fetchall(query, (like_term, like_term, start_date, end_date))
         return [dict(row) for row in rows]
+    def increment_like(self, article_id):
+        query = "UPDATE news_articles SET likes = likes + 1 WHERE article_id = ?"
+        self.execute(query, (article_id,))
+
+    def increment_dislike(self, article_id):
+        query = "UPDATE news_articles SET dislikes = dislikes + 1 WHERE article_id = ?"
+        self.execute(query, (article_id,))
 
 

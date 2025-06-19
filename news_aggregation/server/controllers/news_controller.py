@@ -36,6 +36,29 @@ def search_news_handler(request, data):
 def get_today_by_category_handler(data, _):
     category = data.get("category")
     return news_service.get_today_articles(category)
+from server.repositories.news_repository import NewsRepository
+
+repo = NewsRepository()
+
+def like_article_handler(request,user=None):
+    try:
+        article_id = request.get("article_id")
+        if not article_id:
+            return {"error": "article_id is required"}, 400
+
+        repo.increment_like(article_id)
+        return {"message": "Article liked"}, 200
+    except Exception as e:
+        return {"error": str(e)}, 500
 
 
+def dislike_article_handler(request,user=None):
+    try:
+        article_id = request.get("article_id")
+        if not article_id:
+            return {"error": "article_id is required"}, 400
 
+        repo.increment_dislike(article_id)
+        return {"message": "Article disliked"}, 200
+    except Exception as e:
+        return {"error": str(e)}, 500

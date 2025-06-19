@@ -4,9 +4,9 @@ from client.services.session_manager import SessionManager
 from client.ui.headline_ui import show_headlines_menu
 from client.ui.search_ui import show_search_menu
 from client.ui.notification_ui import show_notification_menu
+from client.utils.show_saved_menu import show_saved_menu
 from server.controllers.category_controller import CategoryController
 from server.controllers.external_server_controller import ExternalServerController
-from client.ui.saved_ui import show_saved_menu
 
 api = APIClient()
 session = SessionManager()
