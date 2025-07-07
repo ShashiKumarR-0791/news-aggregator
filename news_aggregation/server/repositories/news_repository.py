@@ -63,5 +63,49 @@ class NewsRepository(BaseRepository):
     def increment_dislike(self, article_id):
         query = "UPDATE news_articles SET dislikes = dislikes + 1 WHERE article_id = ?"
         self.execute(query, (article_id,))
+    def search_articles_by_keyword(self, keyword, start_date=None, end_date=None):
+        query = '''
+            SELECT * FROM news_articles
+            WHERE LOWER(title) LIKE ?
+        '''
+        params = [f"%{keyword.lower()}%"]
 
+        if start_date:
+            query += " AND published_at >= ?"
+            params.append(start_date)
+        if end_date:
+            query += " AND published_at <= ?"
+            params.append(end_date)
+
+        query += " ORDER BY published_at DESC"
+        return [dict(row) for row in self.fetchall(query, tuple(params))]
+    def add_report(self, article_id, user_id):
+        query = '''
+            INSERT OR IGNORE INTO article_reports (article_id, user_id) VALUES (?, ?)
+        '''
+        self.execute(query, (article_id, user_id))
+
+        count_query = 'SELECT COUNT(*) FROM article_reports WHERE article_id = ?'
+        count = self.fetchone(count_query, (article_id,))[0]
+        if count >= 3:
+            self.execute('UPDATE news_articles SET is_hidden = 1 WHERE article_id = ?', (article_id,))
+        return count
+    def get_reported_articles(self, threshold=3):
+        query = """
+            SELECT a.article_id, a.title, a.is_hidden, COUNT(r.report_id) AS report_count
+            FROM news_articles a
+            JOIN article_reports r ON a.article_id = r.article_id
+            GROUP BY a.article_id
+            HAVING report_count >= ?
+            ORDER BY report_count DESC
+        """
+        rows = self.fetchall(query, (threshold,))
+        return [dict(row) for row in rows]  #  convert each row to dictionary
+
+
+
+
+    def unhide_article(self, article_id):
+        query = 'UPDATE news_articles SET is_hidden = 0 WHERE article_id = ?'
+        self.execute(query, (article_id,))
 

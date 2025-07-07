@@ -4,6 +4,7 @@ from client.services.session_manager import SessionManager
 from client.ui.headline_ui import show_headlines_menu
 from client.ui.search_ui import show_search_menu
 from client.ui.notification_ui import show_notification_menu
+from client.utils.report_article import view_reported_articles
 from client.utils.show_saved_menu import show_saved_menu
 from server.controllers.category_controller import CategoryController
 from server.controllers.external_server_controller import ExternalServerController
@@ -37,12 +38,12 @@ def login():
     password = input("Password: ")
     response = api.request("POST", "/login", {"email": email, "password": password})
     if response.get("success"):
-        # ✅ Fix: Properly store user and token in session
+        #  Fix: Properly store user and token in session
         session.login(user=response["user"], token=response.get("token"))
         print(f"Welcome {response['user'].get('username', 'User')}!")
         show_dashboard()
     else:
-        print("❌", response.get("message") or response.get("error"))
+        print("", response.get("message") or response.get("error"))
 
 def signup():
     username = input("Username: ")
@@ -57,7 +58,7 @@ def signup():
         "role": "user"
     })
 
-    print("✅ Signup successful!" if response.get("success") else f"❌ {response.get('message') or response.get('error')}")
+    print(" Signup successful!" if response.get("success") else f" {response.get('message') or response.get('error')}")
 
 def show_dashboard():
     if session.get_role() == 'admin':
@@ -73,6 +74,7 @@ def show_admin_menu():
         print("3. Update External Server API Key")
         print("4. Add News Category")
         print("5. Logout")
+        
         choice = input("Choose: ")
 
         if choice == '1':
@@ -90,26 +92,28 @@ def show_admin_menu():
             sid = int(input("Enter External Server ID: "))
             new_key = input("Enter the updated API key: ")
             if external_controller.update_api_key(sid, new_key):
-                print("✅ API key updated successfully.")
+                print(" API key updated successfully.")
             else:
-                print("❌ Failed to update API key.")
+                print(" Failed to update API key.")
         elif choice == '4':
             name = input("Enter new category name: ").strip().lower()
             if cc.add_category(name):
-                print(f"✅ Category '{name}' added.")
+                print(f" Category '{name}' added.")
             else:
-                print("❌ Failed to add category.")
+                print(" Failed to add category.")
         elif choice == '5':
             print("Logged out.")
             session.logout()
             break
+        elif choice == '6':
+            view_reported_articles()
         else:
             print("Invalid option. Try again.")
 
 def show_user_menu():
     user = session.get_user()
     if not user:
-        print("❌ Invalid user session. Please log in again.")
+        print(" Invalid user session. Please log in again.")
         return
 
     while True:
@@ -121,8 +125,7 @@ def show_user_menu():
         print("1. Headlines")
         print("2. Saved Articles")
         print("3. Search")
-        print("4. Notifications")
-        print("5. Logout")
+        print("4. Logout")
 
         choice = input("Choose: ").strip()
         if choice == '1':
@@ -131,9 +134,8 @@ def show_user_menu():
             show_saved_menu()
         elif choice == '3':
             show_search_menu(user)
+        
         elif choice == '4':
-            show_notification_menu(user)
-        elif choice == '5':
             session.logout()
             print("Logged out successfully.")
             break

@@ -40,7 +40,7 @@ def fetch_and_print(server):
 
             for a in articles[:5]:
                 if not isinstance(a, dict):
-                    print(f"⚠️ Skipping non-dict article: {a}")
+                    print(f" Skipping non-dict article: {a}")
                     continue
 
                 title = a.get("title")

@@ -38,3 +38,9 @@ class NotificationRepository(BaseRepository):
         query = 'SELECT * FROM notification_configs WHERE user_id = ?'
         rows = self.fetchall(query, (user_id,))
         return [dict(row) for row in rows]
+    def add_notification(self, user_id, message, notif_type="info"):
+        query = '''
+            INSERT INTO notifications (user_id, message, type, is_read)
+            VALUES (?, ?, ?, 0)
+        '''
+        self.execute(query, (user_id, message, notif_type))

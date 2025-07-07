@@ -3,15 +3,15 @@ from client.session import session
 
 BASE_URL = "http://localhost:8000"
 
-def get_saved_articles(user_id):
-    payload = {"user_id": user_id}
+def get_saved_articles():
     try:
-        response = requests.post(f"{BASE_URL}/user/saved", json=payload, headers=session.get_headers())
-        response.raise_for_status()
-        return response.json()
+        headers = session.get_headers()
+        response = requests.post(f"{BASE_URL}/user/saved", headers=headers)
+        return response.json().get("articles", [])
     except Exception as e:
-        print(f"❌ Error fetching saved articles: {e}")
+        print("❌ Failed to load saved articles:", e)
         return []
+
 
 def delete_article(user_id, article_id):
     try:
@@ -23,12 +23,27 @@ def delete_article(user_id, article_id):
         response.raise_for_status()
         return response.status_code == 200
     except Exception as e:
-        print(f"❌ Error deleting article: {e}")
+        print(f" Error deleting article: {e}")
         return False
 def save_article(article_id):
-    payload = {"user_id": session.user["user_id"], "article_id": article_id}
-    response = requests.post(f"{BASE_URL}/user/save-article", json=payload, headers=session.get_headers())
-    return response.ok
+    user = session.get_user()
+    if not user:
+        print("❌ No user in session. Please log in again.")
+        return False
+
+    payload = {"article_id": article_id}
+    try:
+        response = requests.post(
+            f"{BASE_URL}/user/save-article",
+            json=payload,
+            headers=session.get_headers()
+        )
+        response.raise_for_status()
+        return True
+    except Exception as e:
+        print(f"❌ Error saving article: {e}")
+        return False
+
 
 def save_article_by_id(user_id: int, article_id: int):
     try:
@@ -42,8 +57,8 @@ def save_article_by_id(user_id: int, article_id: int):
         if response.headers.get("Content-Type", "").startswith("application/json"):
             return response.json()
         else:
-            print("❌ Server returned non-JSON response.")
+            print(" Server returned non-JSON response.")
             return None
     except requests.exceptions.RequestException as e:
-        print(f"❌ Error saving article: {e}")
+        print(f" Error saving article: {e}")
         return None

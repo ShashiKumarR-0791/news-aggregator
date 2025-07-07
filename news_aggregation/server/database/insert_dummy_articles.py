@@ -26,7 +26,7 @@
 # conn.commit()
 # conn.close()
 
-# print("✅ Inserted 5 dummy news articles for today.")
+# print(" Inserted 5 dummy news articles for today.")
 import sqlite3
 import os
 
@@ -51,4 +51,4 @@ for title in dummy_titles:
 conn.commit()
 conn.close()
 
-print("✅ All dummy articles deleted.")
+print(" All dummy articles deleted.")

@@ -14,7 +14,7 @@ def show_categories():
         rows = cursor.fetchall()
 
         if not rows:
-            print("⚠️ No categories found.")
+            print(" No categories found.")
             return
 
         print("\n📂 Categories in Database:\n")

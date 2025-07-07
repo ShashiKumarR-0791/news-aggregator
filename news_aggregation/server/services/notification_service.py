@@ -35,3 +35,8 @@ class NotificationService:
 
     def update_keywords(self, user_id, keywords):
         return self.repo.set_user_keywords(user_id, keywords)
+    def get_user_config(self, user_id):
+        return self.repo.get_config_by_user(user_id)
+
+    def send_notification(self, user_id, message):
+        self.repo.add_notification(user_id, message)

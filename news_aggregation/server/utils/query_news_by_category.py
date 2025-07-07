@@ -39,7 +39,7 @@ def get_articles_by_category(category_name):
     rows = cursor.fetchall()
 
     if not rows:
-        print("⚠️ No articles found in this category.")
+        print(" No articles found in this category.")
     else:
         for row in rows:
             print(f" {row['title']}")

@@ -12,7 +12,7 @@
 # conn.commit()
 # conn.close()
 
-# print("✅ Only Firebase server is active now.")
+# print(" Only Firebase server is active now.")
 # server/database/enable_newsapi_only.py
 import sqlite3
 import os
@@ -26,4 +26,4 @@ cursor.execute("UPDATE external_servers SET is_active = 0 WHERE name != 'NewsAPI
 
 conn.commit()
 conn.close()
-print("✅ Only NewsAPI is now active.")
+print(" Only NewsAPI is now active.")

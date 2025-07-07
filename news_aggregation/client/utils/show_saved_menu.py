@@ -9,19 +9,19 @@ from client.session import session
 def show_saved_menu():
     user = session.get_user()
     if not user:
-        print("❌ No user in session. Please log in again.")
+        print(" No user in session. Please log in again.")
         return
 
     while True:
         articles = get_saved_articles(user['user_id'])
 
         if not articles:
-            print("❌ No saved articles.")
+            print(" No saved articles.")
             return
 
         print(f"\n📚 Saved Articles for {user['username']}:")
         for idx, article in enumerate(articles, 1):
-            print(f"\n{idx}. 📰 {article['title']}")
+            print(f"\n{idx}.  {article['title']}")
             print(f"    Source    : {article['source']}")
             print(f"    URL       : {article['url']}")
             print(f"    Article ID: {article['article_id']}")
@@ -41,13 +41,13 @@ def show_saved_menu():
                 aid = int(input("Enter Article ID to delete: ").strip())
                 success = delete_article(user['user_id'], aid)
                 if success:
-                    print("✅ Article deleted.")
+                    print(" Article deleted.")
                 else:
-                    print("❌ Failed to delete article.")
+                    print(" Failed to delete article.")
             except Exception as e:
-                print(f"❌ Error: {e}")
+                print(f" Error: {e}")
         else:
-            print("❌ Invalid choice.")
+            print(" Invalid choice.")
 
 
 def print_articles(response):

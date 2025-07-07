@@ -15,7 +15,9 @@ def get_news_by_date_range(start_date, end_date):
 def get_news_by_date_range_only(start_date, end_date):
     payload = {"start_date": start_date, "end_date": end_date}
     response = requests.post(f"{BASE_URL}/news/by-date", json=payload, headers=session.get_headers())
-    return response.json()
+    data = response.json()
+    return data.get("articles", [])
+
 
 
 
@@ -73,7 +75,7 @@ def like_article_by_id(article_id):
             return {"message": "Liked successfully (no JSON returned)"}
 
     except Exception as e:
-        print(f"❌ Like failed: {e}")
+        print(f" Like failed: {e}")
         return None
 
 
@@ -92,14 +94,17 @@ def dislike_article_by_id(article_id):
             return {"message": "Disliked successfully (no JSON returned)"}
 
     except Exception as e:
-        print(f"❌ Dislike failed: {e}")
+        print(f" Dislike failed: {e}")
         return None
+# client/ui/article_ui.py
 
 def interact_with_articles(articles, user):
+    from client.api.news_api import like_article_by_id, dislike_article_by_id, report_article_by_id
+    from client.api.saved_api import save_article_by_id
+
     if not articles:
         return
 
-    # Create a lookup map for easy access
     article_map = {str(article['article_id']): article for article in articles}
 
     while True:
@@ -112,7 +117,7 @@ def interact_with_articles(articles, user):
 
         selected_article = article_map.get(choice)
         if not selected_article:
-            print("❌ Invalid Article ID. Please enter a valid one shown in 🆔.")
+            print("❌ Invalid Article ID.")
             continue
 
         article_id = selected_article['article_id']
@@ -120,12 +125,14 @@ def interact_with_articles(articles, user):
         print("1. Save")
         print("2. Like")
         print("3. Dislike")
-        print("4. Back")
+        print("4. Report")
+        print("5. Back")
+
         action = input("Choose an action: ").strip()
 
         if action == '1':
-            save_article_by_id(user['user_id'], article_id)
-            print("✅ Article saved.")
+            result = save_article_by_id(user['user_id'], article_id)
+            print(f"✅ {result.get('message', 'Saved.')}")
         elif action == '2':
             like_article_by_id(article_id)
             print("👍 You liked this article.")
@@ -133,6 +140,19 @@ def interact_with_articles(articles, user):
             dislike_article_by_id(article_id)
             print("👎 You disliked this article.")
         elif action == '4':
+            result = report_article_by_id(article_id)
+            print(f"📢 {result.get('message')}")
+        elif action == '5':
             continue
         else:
             print("❌ Invalid action.")
+
+def report_article_by_id(article_id):
+    try:
+        payload = {"article_id": article_id}
+        headers = session.get_headers()
+        response = requests.post(f"{BASE_URL}/news/report", json=payload, headers=headers)
+        return response.json()
+    except Exception as e:
+        print(f" Error reporting article: {e}")
+        return None

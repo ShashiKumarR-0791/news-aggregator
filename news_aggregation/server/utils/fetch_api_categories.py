@@ -65,14 +65,14 @@ if __name__ == "__main__":
     all_categories = set()
 
     for server in external_servers:
-        print(f"\n📡 Checking categories from {server['name']}...")
+        print(f"\n Checking categories from {server['name']}...")
         articles = fetch_articles(server)
         found = extract_categories(articles, server)
         if found:
             print(f" Found categories: {sorted(found)}")
             all_categories.update(found)
         else:
-            print("⚠️ No categories found in articles.")
+            print(" No categories found in articles.")
 
-    print("\n📋 All unique categories collected across APIs:")
+    print("\n All unique categories collected across APIs:")
     print(sorted(all_categories) or " None found")

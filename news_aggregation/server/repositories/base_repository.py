@@ -7,10 +7,11 @@ class BaseRepository:
         self.conn.row_factory = sqlite3.Row
         self.cursor = self.conn.cursor()
 
-    def execute(self, query, params=()):
-        self.cursor.execute(query, params)
+    def execute(self, query, params=None):
+        cursor = self.conn.cursor()
+        cursor.execute(query, params or ())
         self.conn.commit()
-        return self.cursor
+
 
     def fetchone(self, query, params=()):
         self.cursor.execute(query, params)

@@ -9,7 +9,9 @@ def get_today_news_handler(_, __):
 def get_range_news_handler(data, _):
     start = data.get('start_date')
     end = data.get('end_date')
-    return news_service.get_articles_by_date_range(start, end)
+    articles = news_service.get_articles_by_date_range(start, end)
+    return {"articles": articles}
+
 
 def get_news_by_category_handler(data, _):
     category = data.get('category')
@@ -26,11 +28,7 @@ def get_today_news_by_category_handler(request, body):
         "articles": articles
     }
 
-def search_news_handler(request, data):  
-    keyword = data.get("query", "").lower()
-    start_date = data.get("start_date")
-    end_date = data.get("end_date")
-    return news_service.search_news(keyword, start_date, end_date)
+
 
 
 def get_today_by_category_handler(data, _):
@@ -62,3 +60,58 @@ def dislike_article_handler(request,user=None):
         return {"message": "Article disliked"}, 200
     except Exception as e:
         return {"error": str(e)}, 500
+    
+def search_news_handler(request, _user):
+    try:
+        data = request.json()
+        keyword = data.get("keyword", "").strip()
+        start = data.get("start_date")
+        end = data.get("end_date")
+
+        if not keyword:
+            return {"error": "Keyword is required"}, 400
+
+        results = repo.search_articles_by_keyword(keyword, start, end)
+        return {"results": results} ,200
+    except Exception as e:
+        return {"error": str(e)}, 500
+def report_article_handler(request, user):
+    try:
+        article_id = request.get("article_id")
+        if not article_id:
+            return {"error": "article_id is required"}, 400
+
+        user_id = user.get("user_id")
+        from server.repositories.news_repository import NewsRepository
+        repo = NewsRepository()
+        report_count = repo.add_report(article_id, user_id)
+
+        return {"message": f"Reported. Total reports: {report_count}"}
+    except Exception as e:
+        return {"error": str(e)}, 500
+    
+def get_reported_articles_handler(_request, user):
+    if user.get("role") != "admin":
+        return {"error": "Unauthorized"}, 403
+
+    from server.repositories.news_repository import NewsRepository
+    repo = NewsRepository()
+    articles = repo.get_reported_articles()
+    return {"articles": articles}  #  return list of dicts under 'articles'
+
+
+
+
+def unhide_article_handler(request, user):
+    if not user or user.get("role") != "admin":
+        return {"error": "Unauthorized"}, 403
+
+    article_id = request.get("article_id")
+    if not article_id:
+        return {"error": "Missing article_id"}, 400
+
+    from server.repositories.news_repository import NewsRepository
+    repo = NewsRepository()
+    repo.unhide_article(article_id)
+    return {"message": "Article unhidden successfully"}
+

@@ -8,7 +8,7 @@ from server.services.notification_service import NotificationService
 from server.repositories.external_server_repository import ExternalServerRepository
 from server.repositories.category_repository import CategoryRepository
 from server.repositories.user_repository import UserRepository
-from server.utils.email_helper import send_email
+from server.utils.email_helper import EmailService
 
 class ExternalAPIService:
     def __init__(self):
@@ -17,7 +17,6 @@ class ExternalAPIService:
         self.category_repo = CategoryRepository()
         self.notification_service = NotificationService()
         self.user_repo = UserRepository()
-
     def infer_category(self, text):
         CATEGORY_KEYWORDS = {
             "business": ["business", "market", "stock", "economy", "company", "finance", "investment"],
@@ -42,7 +41,7 @@ class ExternalAPIService:
             for article in articles:
                 try:
                     if not isinstance(article, dict):
-                        print(f"⚠️ Skipping invalid article format: {article}")
+                        print(f" Skipping invalid article format: {article}")
                         continue
 
                     title = article.get('title')
@@ -85,7 +84,7 @@ class ExternalAPIService:
                         'category': category_name
                     }
 
-                    self.news_service.add_article(article_data)
+                    article_id = self.news_service.add_article(article_data)
 
                     # 🚨 Notify matching users
                     users = self.user_repo.get_all_users()
@@ -94,9 +93,15 @@ class ExternalAPIService:
                         configs = self.notification_service.get_user_config(user_id)
                         for config in configs:
                             if config["is_enabled"] and config["category"].lower() == category_name:
-                                message = f"📰 New article in your subscribed category '{category_name}': {title}"
-                                self.notification_service.send_notification(user_id, message)
-                                send_email(user["email"], "🗞️ News Alert", message)
+                                keywords = config.get("keywords", "")
+                                keyword_list = [k.strip().lower() for k in keywords.split(",") if k.strip()]
+                                match_found = any(kw in (title + article.get('description', '')).lower() for kw in keyword_list)
+
+                                if match_found or not keyword_list:
+                                    message = f" New article in your subscribed category '{category_name}': {title}"
+                                    self.notification_service.send_notification(user_id, message)
+                                    email_service = EmailService()
+                                    email_service.send_email("shashikumar0791632@gmail.com", "🗞️ News Alert", f"{message}\n{article['url']}")
 
                 except Exception as e:
                     print(f" Failed to save article: {e}")

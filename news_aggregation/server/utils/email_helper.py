@@ -1,21 +1,25 @@
 import smtplib
 from email.message import EmailMessage
 
-def send_email(to_email, subject, body):
-    EMAIL_ADDRESS = "shashilearnandcode@gmail.com"
-    EMAIL_PASSWORD = "Sk@0791632"  
+class EmailService:
+    def __init__(self):
+        self.smtp_server = "smtp.gmail.com"
+        self.smtp_port = 587
+        self.from_email = "shashilearnandcode@gmail.com"
+        self.password = "pucg wehh ivzu colx" 
 
-    try:
+    def send_email(self, to_email, subject, content):
         msg = EmailMessage()
-        msg['Subject'] = subject
-        msg['From'] = EMAIL_ADDRESS
+        msg['From'] = self.from_email
         msg['To'] = to_email
-        msg.set_content(body)
+        msg['Subject'] = subject
+        msg.set_content(content)
 
-        with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
-            smtp.login(EMAIL_ADDRESS, EMAIL_PASSWORD)
-            smtp.send_message(msg)
-
-        print(f"✅ Email sent to {to_email}")
-    except Exception as e:
-        print(f"❌ Failed to send email to {to_email}: {e}")
+        try:
+            with smtplib.SMTP(self.smtp_server, self.smtp_port) as server:
+                server.starttls()
+                server.login(self.from_email, self.password)
+                server.send_message(msg)
+                print(f"[EMAIL SENT] -> {to_email}")
+        except Exception as e:
+            print(f"[EMAIL ERROR] {e}")

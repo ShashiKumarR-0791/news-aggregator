@@ -10,7 +10,7 @@ def display_articles(articles):
 
     for index, article in enumerate(articles, start=1):
         print(f"\n{index}. {article.get('title', 'No Title')}")
-        print(f"   📰 Source      : {article.get('source', 'Unknown')}")
+        print(f"    Source      : {article.get('source', 'Unknown')}")
         print(f"   📅 Published At: {article.get('published_at', 'Unknown')}")
         print(f"   🔗 URL         : {article.get('url', 'N/A')}")
         print(f"   🆔 Article ID  : {article.get('article_id', 'N/A')}")

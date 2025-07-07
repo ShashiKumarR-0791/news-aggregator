@@ -31,11 +31,11 @@ class BackgroundScheduler:
             today_articles = self.news_service.get_today_articles()
 
             if not today_articles:
-                print("⚠️ No articles found today. Skipping notifications.")
+                print(" No articles found today. Skipping notifications.")
             else:
                 for user in all_users:
                     uid = user["user_id"]
-                    email = user["email"]
+                    email = "shashikumar0791632@gmail.com"
                     for article in today_articles:
                         article_text = f"{article.get('title')} {article.get('description')} {article.get('content')}"
                         if self.notification_service.check_keywords_in_article(uid, article_text):

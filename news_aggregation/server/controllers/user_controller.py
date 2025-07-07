@@ -12,17 +12,28 @@ class UserController:
         self.base_repo = BaseRepository()
     
 
-    def save_article(self, data, user):
-        user_id = user.get("user_id")
-        article_id = data.get("article_id")
-        query = '''
-            INSERT OR IGNORE INTO saved_articles (user_id, article_id, saved_at)
-            VALUES (?, ?, datetime('now'))
-        '''
-        self.base_repo.execute(query, (user_id, article_id))
-        print(f"📥 Saving article_id={article_id} for user_id={user_id}")
+    def save_article(self, request, user):
+        if not user:
+            return {"error": "Unauthorized"}, 401
 
-        return {"message": "Article saved successfully."}
+        try:
+            data = request.json()
+            user_id = user.get("user_id")
+            article_id = data.get("article_id")
+
+            if not article_id:
+                return {"error": "Missing article_id"}, 400
+
+            query = '''
+                INSERT OR IGNORE INTO saved_articles (user_id, article_id, saved_at)
+                VALUES (?, ?, datetime('now'))
+            '''
+            self.base_repo.execute(query, (user_id, article_id))
+            return {"message": "Article saved successfully."}
+        except Exception as e:
+            return {"error": str(e)}, 500
+
+
 
     def delete_saved_article(self, data, user):
         user_id = user.get("user_id")
@@ -31,7 +42,7 @@ class UserController:
         self.base_repo.execute(query, (user_id, article_id))
         return {"message": "Article removed from saved list."}
 
-    def get_saved_articles(self, data, user):
+    def get_saved_articles(self, request, user):
         user_id = user.get("user_id")
         query = '''
             SELECT na.* FROM saved_articles sa
@@ -39,7 +50,8 @@ class UserController:
             WHERE sa.user_id = ?
         '''
         rows = self.base_repo.fetchall(query, (user_id,))
-        return [dict(row) for row in rows]
+        return {"articles": [dict(r) for r in rows]}
+
 
     @staticmethod
     def delete_user(request, user):

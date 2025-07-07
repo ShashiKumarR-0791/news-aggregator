@@ -29,11 +29,11 @@ def show_headlines_menu(user):
                 display_articles(articles)
                 interact_with_articles(articles, user)
             else:
-                print("❌ Failed to fetch articles:", response)
+                print(" Failed to fetch articles:", response)
         elif choice == '3':
             break
         else:
-            print("❌ Invalid choice. Please enter 1, 2, or 3.")
+            print(" Invalid choice. Please enter 1, 2, or 3.")
 
 
 def show_today_category_menu(user):
@@ -67,6 +67,6 @@ def show_today_category_menu(user):
                 display_articles(articles)
                 interact_with_articles(articles, user)           
             else:
-                print("❌ Failed to load articles:", response)
+                print(" Failed to load articles:", response)
         else:
-            print("❌ Invalid choice. Please select from 1 to 6.")
+            print(" Invalid choice. Please select from 1 to 6.")

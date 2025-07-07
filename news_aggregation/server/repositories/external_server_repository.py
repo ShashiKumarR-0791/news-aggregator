@@ -21,10 +21,16 @@ class ExternalServerRepository(BaseRepository):
     def get_all_servers(self, with_api_keys=False):
         query = "SELECT * FROM external_servers"
         rows = self.fetchall(query)
-        if not with_api_keys:
-            for r in rows:
-                r["api_key"] = "***"  
-        return rows
+
+        result = []
+        for row in rows:
+            r = dict(row)  # convert to mutable dict
+            if not with_api_keys:
+                r["api_key"] = "***"
+            result.append(r)
+
+        return result
+
 
 
 
