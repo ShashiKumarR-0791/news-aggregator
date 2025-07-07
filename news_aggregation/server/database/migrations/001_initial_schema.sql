@@ -40,6 +40,7 @@ CREATE TABLE IF NOT EXISTS news_articles (
     created_at TEXT DEFAULT CURRENT_TIMESTAMP,
     likes INTEGER DEFAULT 0,
     dislikes INTEGER DEFAULT 0,
+    is_hidden INTEGER DEFAULT 0,
     UNIQUE(url, source),
     FOREIGN KEY (category_id) REFERENCES categories(category_id)
 );
@@ -73,4 +74,11 @@ CREATE TABLE IF NOT EXISTS notification_configs (
     created_at TEXT DEFAULT CURRENT_TIMESTAMP,
     UNIQUE(user_id, category),
     FOREIGN KEY(user_id) REFERENCES users(user_id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS article_reports (
+    report_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    article_id INTEGER NOT NULL,
+    created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY(article_id) REFERENCES news_articles(article_id) ON DELETE CASCADE
 );

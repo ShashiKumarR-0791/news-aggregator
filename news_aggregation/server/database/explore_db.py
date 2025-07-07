@@ -38,7 +38,7 @@ if "news_articles" in tables:
 # Today's Articles
 if "news_articles" in tables:
     today = datetime.now(timezone.utc).strftime('%Y-%m-%d')
-    print(f"\n📅 Articles Published Today ({today}):")
+    print(f"\n Articles Published Today ({today}):")
     cursor.execute("SELECT article_id, title, published_at FROM news_articles WHERE DATE(published_at) = DATE(?)", (today,))
     today_articles = cursor.fetchall()
     if today_articles:

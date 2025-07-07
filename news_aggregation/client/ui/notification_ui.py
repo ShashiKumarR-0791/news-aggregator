@@ -17,11 +17,11 @@ def show_notification_menu(user):
                 if not notifications:
                     print(" No notifications found.")
                 else:
-                    print("\n📨 Your Notifications:")
+                    print("\n Your Notifications:")
                     for n in notifications:
                         status = " New" if not n.get("is_read") else "✔️ Read"
                         print(f"\n[{status}] {n['created_at']}")
-                        print(f"📩 {n['message']}")
+                        print(f" {n['message']}")
             except Exception as e:
                 print(f" Failed to load notifications: {e}")
 
@@ -29,9 +29,9 @@ def show_notification_menu(user):
             try:
                 configs = notification_api.get_config()
                 if not configs:
-                    print("ℹ️ No notification preferences found.")
+                    print(" No notification preferences found.")
                 else:
-                    print("\n🔧 Your Category Notification Preferences:")
+                    print("\n Your Category Notification Preferences:")
                     for c in configs:
                         status = " Enabled" if c['is_enabled'] else " Disabled"
                         print(f"{c['category'].capitalize()}: {status} | Keywords: {c.get('keywords', 'None')}")

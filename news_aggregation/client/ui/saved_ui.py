@@ -30,7 +30,7 @@ def save_article_by_id(user_id, article_id):
         response = requests.post(f"{BASE_URL}/user/save-article", json=payload, headers=headers)
         return response.json()
     except Exception as e:
-        print(f"❌ Error saving article: {e}")
+        print(f" Error saving article: {e}")
         return None
 
 

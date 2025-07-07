@@ -2,7 +2,6 @@ from server.services.notification_service import NotificationService
 
 notif_service = NotificationService()
 
-# === OLD (if still used anywhere) ===
 def view_notifications(data, _):
     user_id = data.get("user_id")
     return notif_service.get_user_notifications(user_id)
@@ -18,8 +17,6 @@ def configure_notifications(data, _):
 def get_configs(data, _):
     user_id = data.get("user_id")
     return notif_service.get_user_config(user_id)
-
-# === REST-STYLE used by client/api/notification_api.py ===
 
 def get_notifications_handler(_, user):
     notifications = notif_service.get_notifications(user['user_id'])

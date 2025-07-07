@@ -25,6 +25,4 @@ class Session:
             "Content-Type": "application/json"
         }
 
-
-
 session = Session()

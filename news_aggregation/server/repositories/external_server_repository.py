@@ -24,15 +24,12 @@ class ExternalServerRepository(BaseRepository):
 
         result = []
         for row in rows:
-            r = dict(row)  # convert to mutable dict
+            r = dict(row)  
             if not with_api_keys:
                 r["api_key"] = "***"
             result.append(r)
 
         return result
-
-
-
 
     def update_api_key(self, server_id, new_key):
         conn = get_connection()

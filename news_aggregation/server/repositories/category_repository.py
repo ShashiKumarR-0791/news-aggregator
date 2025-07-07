@@ -5,13 +5,12 @@ from server.models.category import Category
 class CategoryRepository(BaseRepository):
     def add_category(self, category):
         try:
-            # Ensure we are inserting a plain string
             name = category.name if hasattr(category, 'name') else str(category)
             query = "INSERT OR IGNORE INTO categories (name) VALUES (?)"
             self.execute(query, (name.lower(),))
             return True
         except Exception as e:
-            print(f"❌ Failed to add category: {e}")
+            print(f" Failed to add category: {e}")
             return False
 
 
@@ -28,6 +27,6 @@ class CategoryRepository(BaseRepository):
             result = self.fetchone(query, (name.lower(),))
             return result['category_id'] if result else None
         except Exception as e:
-            print(f"❌ Error in get_category_id_by_name: {e}")
+            print(f" Error in get_category_id_by_name: {e}")
             return None
 

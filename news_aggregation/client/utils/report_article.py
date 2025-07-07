@@ -26,8 +26,7 @@ def view_reported_articles():
             print(f" Missing key in article data: {e}")
     print("-" * 70)
 
-    # Option to unhide
-    if input("🔓 Do you want to unhide any article? (y/n): ").strip().lower() == 'y':
+    if input(" Do you want to unhide any article? (y/n): ").strip().lower() == 'y':
         aid = input("Enter Article ID to unhide: ").strip()
         if not aid.isdigit():
             print(" Invalid Article ID.")

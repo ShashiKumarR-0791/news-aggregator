@@ -7,6 +7,7 @@ from client.ui.article_ui import (
     display_articles,
     save_article_prompt
 )
+from datetime import datetime
 
 def show_headlines_menu(user):
     while True:
@@ -17,10 +18,24 @@ def show_headlines_menu(user):
         choice = input("Choose: ").strip()
 
         if choice == '1':
-            show_today_category_menu(user)  # Also pass user here
+            show_today_category_menu(user)  
         elif choice == '2':
             start_date = input("Start Date (YYYY-MM-DD): ").strip()
             end_date = input("End Date (YYYY-MM-DD): ").strip()
+
+            def is_valid_date(date_str):
+                try:
+                    datetime.strptime(date_str, "%Y-%m-%d")
+                    return True
+                except ValueError:
+                    return False
+
+            if start_date and not is_valid_date(start_date):
+                print(" Invalid start date format. Please use YYYY-MM-DD.")
+                continue
+            if end_date and not is_valid_date(end_date):
+                print(" Invalid end date format. Please use YYYY-MM-DD.")
+                continue
 
             response = get_news_by_date_range(start_date, end_date)
             articles = response.get("articles") if isinstance(response, dict) else None

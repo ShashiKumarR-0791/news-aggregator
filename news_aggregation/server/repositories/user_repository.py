@@ -60,3 +60,8 @@ class UserRepository(BaseRepository):
                 "message": str(e)
             }, 500
 
+    def get_user_by_email(self, email):
+        query = 'SELECT * FROM users WHERE email = ?'
+        row = self.fetchone(query, (email,))
+        return dict(row) if row else None
+

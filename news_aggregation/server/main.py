@@ -23,6 +23,8 @@ def setup_routes():
     router.add_route("POST", "/admin/promote-user", user_ctrl.promote_user)
     router.add_route("GET", "/admin/reported-articles", news_controller.get_reported_articles_handler)
     router.add_route("POST", "/admin/unhide-article", news_controller.unhide_article_handler)
+    router.add_route("DELETE", "/admin/delete-article", news_controller.delete_article_handler)
+    router.add_route("GET", "/admin/hidden-articles", news_controller.get_hidden_articles_handler)
 
     router.add_route("GET", "/admin/reported-articles", news_controller.get_reported_articles_handler)
 
@@ -35,12 +37,11 @@ def setup_routes():
     router.add_route("POST", "/news/like", news_controller.like_article_handler)
     router.add_route("POST", "/news/dislike", news_controller.dislike_article_handler)
     router.add_route("POST","/news/by-date",news_controller.get_range_news_handler)
+    router.add_route("GET", "/news/most-liked", news_controller.get_most_liked_articles_handler)
     user_ctrl = user_controller.UserController()
 
     router.add_route("POST", "/saved", user_ctrl.save_article)
     router.add_route("POST", "/user/save-article", user_ctrl.save_article)
-
-
 
     #  External API fetch
     router.add_route("POST", "/external/fetch", external_api_controller.fetch_news_handler)
@@ -62,6 +63,5 @@ def setup_routes():
 if __name__ == "__main__":
     scheduler = BackgroundScheduler(interval_hours=3)
     scheduler.start()
-
     router = setup_routes()
     run_server(router)
